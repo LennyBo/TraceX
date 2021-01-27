@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>TraceX</Name>
+    <Version>1.0.0</Version>
+    <Title>TraceX Installer</Title>
+    <Publisher>He-ARC</Publisher>
+    <StartMenuDir>TraceX</StartMenuDir>
+    <TargetDir>C:/Program Files (x86)/TraceX</TargetDir>
+</Installer>

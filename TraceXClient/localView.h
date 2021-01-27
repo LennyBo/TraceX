@@ -1,11 +1,11 @@
 #ifndef LOCALVIEW_H
 #define LOCALVIEW_H
 
+#include "keyicon.h"
+
 #include <QWidget>
 
-#include "keyIcon.h"
-#include "comboBoxColor.h"
-#include "constants.h"
+#include "tracexclient.h"
 
 class ComboBoxColor;
 class QLabel;
@@ -17,23 +17,12 @@ class QVBoxLayout;
 class QPushButton;
 class QCheckBox;
 
-#include "tracexclient.h"
 
 class LocalView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit LocalView(QWidget *parent = nullptr);
-
-    QLabel *lblTitle, *lblIPAdress, *lblExternalIP;
-    QLineEdit *fldPlayers[3], *fldIP;
-    QGridLayout *grid;
-    QVBoxLayout *layout, *mainLayout;
-    QHBoxLayout *IPAdressLayout, *joinExternalLayout;
-    ComboBoxColor *cbColorPicker[3];
-    KeyIcon *keyLabel[3];
-    QPushButton *btnBack, *btnPlay;
-
+    LocalView(QWidget *parent = nullptr);
 
 public slots:
     void enablePlayer3LineEdit();
@@ -46,6 +35,16 @@ signals:
     void clicked();
     void addGameClient(QList<TraceXClient*> g);
     void isChecked();
+
+private:
+    QVBoxLayout *mainLayout;
+    QHBoxLayout *IPAdressLayout, *joinExternalLayout;
+    QGridLayout *grid;
+    QLabel *lblTitle, *lblIPAdress, *lblExternalIP;
+    KeyIcon *keyLabel[3];
+    QLineEdit *fldPlayers[3], *fldIP;
+    ComboBoxColor *cbColorPicker[3];
+    QPushButton *btnBack, *btnPlay;
 };
 
 #endif // LOCALVIEW_H

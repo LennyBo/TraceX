@@ -1,7 +1,6 @@
 #ifndef HELPVIEW_H
 #define HELPVIEW_H
 
-#include <QObject>
 #include <QWidget>
 
 class QLabel;
@@ -12,14 +11,18 @@ class HelpView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit HelpView(QWidget *parent = nullptr);
-
-    QLabel *lbRules;
-    QPushButton *btnBack;
-    QGridLayout *grid;
+    HelpView(QWidget *parent = nullptr);
 
 signals:
     void changeToMainMenuView();
+
+private:
+    QGridLayout *grid;
+    QLabel *lbRules;
+    QPushButton *btnBack;
+
+
+
 };
 
 #endif // HELPVIEW_H

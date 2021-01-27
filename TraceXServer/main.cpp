@@ -1,6 +1,6 @@
 
 #include "viewserver.h"
-#include "widgetPlayer.h"
+#include "widgetplayer.h"
 
 #include <QApplication>
 

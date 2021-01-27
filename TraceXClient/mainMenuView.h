@@ -16,14 +16,18 @@ class MainMenuView : public QWidget
 public:
     MainMenuView();
 
-    QPushButton *btnLocalGame, *btnNetworkGame, *btnHelp;
-    QLabel *lblTitle;
-    QGridLayout *grid;
+
 
 signals:
-    void changeToLocalView();
-    void changeToNetworkView();
+    void changeToLocalView();    
     void changeToHelpView();
+
+private:
+    QGridLayout *grid;
+    QLabel *lblTitle;
+    QPushButton *btnLocalGame, *btnHelp;
+
+
 };
 
 #endif // MAINMENUVIEW_H

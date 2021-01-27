@@ -1,7 +1,6 @@
-#include "comboBoxColor.h"
+#include "comboboxcolor.h"
+
 #include "constants.h"
-
-
 
 ComboBoxColor::ComboBoxColor(QWidget *parent) : QComboBox(parent)
 {

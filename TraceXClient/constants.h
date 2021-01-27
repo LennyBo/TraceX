@@ -9,7 +9,8 @@ const int NUMBER_COLORS = 8;
 const int PLAYER_WIDTH = 5;
 
 const QColor COLORS[] = {Qt::white, Qt::red,Qt::green,Qt::blue,Qt::yellow,Qt::magenta,Qt::cyan,Qt::gray,Qt::white};
-struct keyTest{
+struct keyTest
+{
     int keyValRight;
     QString keySymbolRight;
     int keyValLeft;
@@ -25,10 +26,12 @@ const keyTest KEYS[MAX_LOCAL_PLAYERS] =
 };
 
 const int GAME_SIZE = 800;
+const int MARGIN_GRAPHICSVIEW = 20;
 
 const int TIME_TO_SEND_DIRECTION = 62;
 
-struct player{
+struct player
+{
     QString name;
     int score;
     int colorID;

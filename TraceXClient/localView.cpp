@@ -1,3 +1,5 @@
+#include "localview.h"
+
 #include <QLabel>
 #include <QLineEdit>
 #include <QLayout>
@@ -7,26 +9,28 @@
 #include <QPushButton>
 #include <QCheckBox>
 
-#include "localView.h"
+#include "comboboxcolor.h"
+#include "constants.h"
 
 
 LocalView::LocalView(QWidget *parent) : QWidget(parent)
 {
     mainLayout = new QVBoxLayout(this);
-    IPAdressLayout = new QHBoxLayout(this);
-    joinExternalLayout = new QHBoxLayout(this);
+    IPAdressLayout = new QHBoxLayout();
+    joinExternalLayout = new QHBoxLayout();
     joinExternalLayout->setAlignment(Qt::AlignLeft);
 
     lblTitle = new QLabel(tr("Paramètres des joueurs"), this);
     lblTitle->setObjectName("h1");
     lblExternalIP = new QLabel(tr("Rejoindre un serveur existant : "));
     mainLayout->addWidget(lblTitle);
-    grid = new QGridLayout(this);
+    grid = new QGridLayout();
     grid->addWidget(lblTitle, 0, 0);
     btnBack = new QPushButton("Retour", this);
     btnPlay = new QPushButton("Jouer !");
     fldIP = new QLineEdit(this);
     fldIP->setText("127.0.0.1");
+    lblIPAdress = new QLabel(this);
 
     for(int i = 0; i < 3; i++)
     {
@@ -84,9 +88,12 @@ void LocalView::enablePlayer3LineEdit()
         fldPlayers[2]->clear();
         fldPlayers[2]->setReadOnly(true);
     }
-
 }
 
+/**
+ * LocalView::sendToServer
+ * Create game client, try to connect and change display
+ */
 void LocalView::sendToServer()
 {
     QList<TraceXClient*> gameClients;

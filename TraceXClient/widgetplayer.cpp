@@ -10,39 +10,31 @@
 
 WidgetPlayer::WidgetPlayer(QString namePlayer, int playerID,int score, QWidget* parent) : QWidget(parent)
 {
-
-
-    QHBoxLayout* mainLayout = new QHBoxLayout(this);
+    mainLayout = new QHBoxLayout(this);
     this->setLayout(mainLayout);
 
-    QWidget* lblColor = new QWidget(this);
-    lblColor->setFixedSize(sizeDot,sizeDot);
+    dotColorWidget = new QWidget(this);
+    dotColorWidget->setFixedSize(sizeDot,sizeDot);
 
     QPainterPath path;
-    path.addRoundedRect(lblColor->rect(), sizeDot/2, sizeDot/2);
+    path.addRoundedRect(dotColorWidget->rect(), sizeDot/2, sizeDot/2);
     QRegion mask = QRegion(path.toFillPolygon().toPolygon());
-    lblColor->setMask(mask);
+    dotColorWidget->setMask(mask);
 
     QPalette pal = palette();
     pal.setColor(QPalette::Background, COLORS[playerID+1]);
 
-    lblColor->setAutoFillBackground(true);
-    lblColor->setPalette(pal);
+    dotColorWidget->setAutoFillBackground(true);
+    dotColorWidget->setPalette(pal);
 
-    QLabel* lblName = new QLabel(namePlayer, this);
+    lblName = new QLabel(namePlayer, this);
     lblScore = new QLabel("0", this);
 
-
-    mainLayout->addWidget(lblColor);
+    mainLayout->addWidget(dotColorWidget);
     mainLayout->addWidget(lblName);
     mainLayout->addWidget(lblScore);
 
-
-    lblScore->setText(QString::number(score));
-    //connect(p, &Player::scoreChanged, this, &WidgetPlayer::updateScore);
-}
-
-void WidgetPlayer::updateScore(int score)
-{
     lblScore->setText(QString::number(score));
 }
+
+

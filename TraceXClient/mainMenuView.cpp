@@ -1,4 +1,4 @@
-#include "mainMenuView.h"
+#include "mainmenuview.h"
 #include "stackedlayout.h"
 
 #include <QPushButton>

@@ -1,8 +1,9 @@
-#include "TCPServerWidget.h"
+#include "tcpserverwidget.h"
 #include "player.h"
 #include <QMessageBox>
 #include <QtNetwork>
 #include <QRandomGenerator>
+#include <QGraphicsItem>
 
 TCPServerWidget::TCPServerWidget(QWidget *parent)
     : QGraphicsView(parent)
@@ -25,6 +26,7 @@ TCPServerWidget::TCPServerWidget(QWidget *parent)
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
     sceneRect = scene->addRect(sceneRectF);
+    sceneRect->setPen(QPen(Qt::white));
 
 
     //Since we don't send scores as fast as lines, we have a seperate timer for score
@@ -36,6 +38,10 @@ TCPServerWidget::TCPServerWidget(QWidget *parent)
 
 }
 
+TCPServerWidget::~TCPServerWidget()
+{
+
+}
 
 /**
 * TCPServerWidget::initServer()
@@ -44,7 +50,8 @@ TCPServerWidget::TCPServerWidget(QWidget *parent)
 void TCPServerWidget::initServer()
 {
     tcpServer = new QTcpServer(this);
-    if (!tcpServer->listen(QHostAddress::Any,DEFAULT_PORT)) {
+    if (!tcpServer->listen(QHostAddress::Any,DEFAULT_PORT))
+    {
         QMessageBox::critical(this, tr("TraceXServer"),
                               tr("Unable to start the server: %1.")
                               .arg(tcpServer->errorString()));
@@ -53,9 +60,11 @@ void TCPServerWidget::initServer()
     QString ipAddress;
     QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
     // use the first non-localhost IPv4 address
-    for (int i = 0; i < ipAddressesList.size(); ++i) {
+    for (int i = 0; i < ipAddressesList.size(); ++i)
+    {
         if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
-                ipAddressesList.at(i).toIPv4Address()) {
+                ipAddressesList.at(i).toIPv4Address())
+        {
             ipAddress = ipAddressesList.at(i).toString();
             break;
         }
@@ -68,7 +77,6 @@ void TCPServerWidget::initServer()
     connect(tcpServer, &QTcpServer::newConnection, this, &TCPServerWidget::newConnection);
 }
 
-
 /**
 * TCPServerWidget::newConnection()
 * is a slot.
@@ -76,7 +84,8 @@ void TCPServerWidget::initServer()
 * Adds a player to the QList<player*> players
 * gives it the socket and makes connections
 */
-void TCPServerWidget::newConnection(){
+void TCPServerWidget::newConnection()
+{
     QTcpSocket *clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection, &QAbstractSocket::disconnected,
             clientConnection, &QObject::deleteLater);
@@ -89,14 +98,14 @@ void TCPServerWidget::newConnection(){
         connect(players.back(),&Player::playerSetColor,this,&TCPServerWidget::playerSetColor);
         connect(players.back(),&Player::playerSetName,this,&TCPServerWidget::playerSetName);
         connect(players.back(),&Player::playerReady,this,&TCPServerWidget::checkStart);
-    }else{
+    }
+    else
+    {
         qDebug() << "Server is full, kicking player";
         clientConnection->close();
     }
-
     //connect(clientConnection,&QAbstractSocket::re)
 }
-
 
 /**
 * TCPServerWidget::resetGame()
@@ -104,7 +113,6 @@ void TCPServerWidget::newConnection(){
 */
 void TCPServerWidget::resetGame()
 {
-
     foreach(Player* p, players)
     {
         //if disconnected
@@ -121,17 +129,14 @@ void TCPServerWidget::resetGame()
 * as this also makes sure the players are reset
 */
 void TCPServerWidget::startGame()
-{
-    /*scene->removeItem(sceneRect);
-    scene->clear();
-    scene->addItem(sceneRect);*/
-    if(gameTimer == nullptr){
+{    
+    if(gameTimer == nullptr)
+    {
         gameTimer = new QTimer(this);
         connect(gameTimer, &QTimer::timeout, this, &TCPServerWidget::tick);
     }
     gameTimer->start(TIME_TO_TICK);
 }
-
 
 /**
 * TCPServerWidget::checkStart(bool ready)
@@ -141,7 +146,8 @@ void TCPServerWidget::startGame()
 *
 * @param bool ready : true if the player is ready, false if not ready
 */
-void TCPServerWidget::checkStart(bool ready){
+void TCPServerWidget::checkStart(bool ready)
+{
     if(players.count() < 2)
         return;
     foreach(Player* p, players)
@@ -154,7 +160,6 @@ void TCPServerWidget::checkStart(bool ready){
     QTimer::singleShot(DELAY_BETWEEN_ROUND,this,[=]{resetGame();});
 }
 
-
 /**
 * TCPServerWidget::tick()
 * Is called every tick of the timer.
@@ -163,23 +168,18 @@ void TCPServerWidget::checkStart(bool ready){
 void TCPServerWidget::tick()
 {
     foreach(Player* p, players)
-    {
-        //just for test collides
-        /*if(rand() %2 == 0){
-            p->setDirection(static_cast<directions>(rand() %3 -1));
-        }*/
-
+    {  
         p->tick();
         if(p->getLines().count() > 0 && !scene->items().contains(p->getLines().last()))
-        {
-            //scene->addItem(p->getLines().last());
+        {     
             scene->addItem(p->getLines().last());
         }
     }
-    checkCollide();
-    checkAlive();
 
     sendNewLines();
+
+    checkCollide();
+    checkAlive();
 }
 
 /**
@@ -187,7 +187,8 @@ void TCPServerWidget::tick()
 * Is called on every scoreTimer tick
 * sends score name and color of all connected players to all players
 */
-void TCPServerWidget::sendScores(){
+void TCPServerWidget::sendScores()
+{
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_10);
@@ -207,7 +208,8 @@ void TCPServerWidget::sendScores(){
 *
 * @param QDataStream &out : stream to write to
 */
-void TCPServerWidget::getScores(QDataStream &out){
+void TCPServerWidget::getScores(QDataStream &out)
+{
     foreach(Player* p, players){
         out << (QString)p->getName() << (quint8) p->getID() << (quint16)p->getScore();
     }
@@ -218,7 +220,8 @@ void TCPServerWidget::getScores(QDataStream &out){
 * Sends all new lines to all clients so they can display it
 * on their view
 */
-void TCPServerWidget::sendNewLines(){
+void TCPServerWidget::sendNewLines()
+{
     QByteArray block = Player::sendPlayers(players);
     foreach(Player* p, players)
     {
@@ -227,13 +230,13 @@ void TCPServerWidget::sendNewLines(){
     }
 }
 
-
 /**
 * TCPServerWidget::getFreeColor()
 *
 * @returns a color that is free
 */
-int TCPServerWidget::getFreeColor(){
+int TCPServerWidget::getFreeColor()
+{
     int colorID = -1;
     while(!isFreeColor(++colorID) && colorID < MAX_PLAYER_COUNT);
 
@@ -246,9 +249,12 @@ int TCPServerWidget::getFreeColor(){
 * @param int colorID : color to checkeck
 * @returns true if it is free
 */
-bool TCPServerWidget::isFreeColor(int colorID){
-    foreach(Player* p, players){
-        if(p->getID() == colorID){
+bool TCPServerWidget::isFreeColor(int colorID)
+{
+    foreach(Player* p, players)
+    {
+        if(p->getID() == colorID)
+        {
             return false;
         }
     }
@@ -269,12 +275,14 @@ void TCPServerWidget::checkAlive()
         if(p->isAlive() && winner == nullptr)
         {
             winner = p;
-        }else if(p->isAlive() && winner != nullptr)
+        }
+        else if(p->isAlive() && winner != nullptr)
         {
             return; //More than 1 alive
         }
     }
-    if(winner != nullptr){
+    if(winner != nullptr)
+    {
         winner->wonRound();
     }
     gameTimer->stop();
@@ -290,7 +298,8 @@ void TCPServerWidget::checkCollide()
 {
     foreach(Player* p, players)
     {
-        if(p->isAlive()){
+        if(p->isAlive())
+        {
             QGraphicsLineItem* head = p->getLines().last();
 
             if(!head->collidesWithItem(sceneRect,Qt::ContainsItemBoundingRect))
@@ -326,11 +335,6 @@ void TCPServerWidget::checkCollide()
     }
 }
 
-TCPServerWidget::~TCPServerWidget()
-{
-
-}
-
 /**
 * TCPServerWidget::playerSetColor(int id, Player* p)
 * Is a slot called when a player sends colorSet command
@@ -343,16 +347,17 @@ TCPServerWidget::~TCPServerWidget()
 void TCPServerWidget::playerSetColor(int id, Player* p)
 {
     QList<Player*>::iterator i;
-    for(i = players.begin();i != players.end();++i){
+    for(i = players.begin();i != players.end();++i)
+    {
         Player* pI = *i;
-        if(pI != p && pI->getID() == id){
+        if(pI != p && pI->getID() == id)
+        {
             p->setID(false,id);
             return;
         }
     }
     p->setID(true,id);
 }
-
 
 /**
 * TCPServerWidget::playerSetName(QString str,Player* p)
@@ -363,11 +368,14 @@ void TCPServerWidget::playerSetColor(int id, Player* p)
 * @param QString str : Choosen name
 * @param Player* p : pointer to the player trying to change color
 */
-void TCPServerWidget::playerSetName(QString str,Player* p){
+void TCPServerWidget::playerSetName(QString str,Player* p)
+{
     QList<Player*>::iterator i;
-    for(i = players.begin();i != players.end();++i){
+    for(i = players.begin();i != players.end();++i)
+    {
         Player* pI = *i;
-        if(pI != p && pI->getName() == str){
+        if(pI != p && pI->getName() == str)
+        {
             //Dont accept
             p->setName(false,str);
             return;
@@ -376,7 +384,6 @@ void TCPServerWidget::playerSetName(QString str,Player* p){
     //Accept
     p->setName(true,str);
 }
-
 
 /**
 * TCPServerWidget::playerLeft(Player* p)
@@ -388,18 +395,10 @@ void TCPServerWidget::playerLeft(Player* p)
 {
     players.removeOne(p);
     emit playerRemoved();
-    delete(p);
-    /*if(!p->getIsConnected())
-    {
-        p->kill();
-    }
-
-    if(players.count() == 0){
-        timer->stop(); //TODO make a stop function
-    }*/
+    delete(p);    
     qDebug() << "player count : " << players.size();
-    if(players.count() == 0){
+    if(players.count() == 0)
+    {
         gameTimer->stop();
     }
 }
-

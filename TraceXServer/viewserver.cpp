@@ -1,22 +1,25 @@
 #include "viewserver.h"
-#include "TCPServerWidget.h"
-#include "QLabel"
-#include "QBoxLayout"
-#include "widgetPlayer.h"
+
+#include <QBoxLayout>
+#include <iostream>
 #include <QList>
+#include <QLabel>
+
+#include "tcpserverwidget.h"
+#include "widgetplayer.h"
 
 #define SCALE_VIEW 0.5
 
 ViewServer::ViewServer(QWidget *parent) : QWidget(parent)
 {
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    playersLayout = new QVBoxLayout(this);
+    mainLayout = new QVBoxLayout(this);
+    playersLayout = new QVBoxLayout();
 
     QLabel *lblTitle = new QLabel(tr("Serveur"),this);
     lblTitle->setObjectName("h1");
 
     tcpServerWidget = new TCPServerWidget(this);
-    tcpServerWidget->setFixedSize(GAME_SIZE*SCALE_VIEW,GAME_SIZE*SCALE_VIEW);
+    tcpServerWidget->setFixedSize(GAME_SIZE*SCALE_VIEW+MARGIN_GRAPHICSVIEW,GAME_SIZE*SCALE_VIEW+MARGIN_GRAPHICSVIEW);
 
     tcpServerWidget->scale(SCALE_VIEW,SCALE_VIEW);
 
@@ -51,5 +54,3 @@ void ViewServer::removePlayer()
         playersLayout->addWidget(vp);
     }
 }
-
-

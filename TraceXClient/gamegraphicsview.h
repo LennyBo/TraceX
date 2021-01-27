@@ -1,10 +1,11 @@
 #ifndef GAMEGRAPHICSVIEW_H
 #define GAMEGRAPHICSVIEW_H
 
-#include <QWidget>
-#include <QGraphicsView>
-#include <QGraphicsItem>
 #include "tracexclient.h"
+
+#include <QGraphicsView>
+
+class QGraphicsLineItem;
 
 class GameGraphicsView: public QGraphicsView
 {
@@ -13,10 +14,12 @@ class GameGraphicsView: public QGraphicsView
 public:
     GameGraphicsView(QWidget *parent = nullptr);
     ~GameGraphicsView();
+
     QList<TraceXClient*> getGameClient();
 
 public slots:
     void startGame(QList<TraceXClient*> g);
+
     void newLines(QList<QGraphicsLineItem*> &items);
     void duplicateLines(QList<QGraphicsLineItem*> &items); //Deletes them
     void deleteGraphicsItems();

@@ -10,10 +10,11 @@ class KeyIcon : public QWidget
 {
     Q_OBJECT
 public:
-    explicit KeyIcon(int keyGroup, QWidget *parent = nullptr);
+    KeyIcon(int keyGroup, QWidget *parent = nullptr);
 
-    QLabel *lblKey1, *lblKey2;
+private:
     QHBoxLayout *layout;
+    QLabel *lblKey1, *lblKey2;
 };
 
 #endif // KEYICON_H

@@ -2,14 +2,16 @@
 #define STACKEDLAYOUT_H
 
 #include <QWidget>
-#include <QStackedLayout>
+
+class QStackedLayout;
 
 class StackedLayout : public QWidget
 {
     Q_OBJECT
 public:
-
     StackedLayout(QWidget *parent = nullptr);
+
+private:
     QStackedLayout *stacked;   
 };
 

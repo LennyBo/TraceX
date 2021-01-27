@@ -1,14 +1,16 @@
 #include "tracexclient.h"
+#include "constants.h"
+
 #include <QObject>
 #include <QMessageBox>
 #include <QPen>
 #include <QMap>
 #include <QTimer>
+#include <QTcpSocket>
 
+#include <QGraphicsItem>
 
-#include "constants.h"
-
-QPen TraceXClient::pens[] = {QPen(COLORS[1],PLAYER_WIDTH),QPen(COLORS[2],PLAYER_WIDTH),QPen(COLORS[3],PLAYER_WIDTH),QPen(COLORS[4],PLAYER_WIDTH),QPen(COLORS[5],PLAYER_WIDTH),QPen(COLORS[6],PLAYER_WIDTH)};
+QPen TraceXClient::pens[] = {QPen(COLORS[1],PLAYER_WIDTH),QPen(COLORS[2],PLAYER_WIDTH),QPen(COLORS[3],PLAYER_WIDTH),QPen(COLORS[4],PLAYER_WIDTH),QPen(COLORS[5],PLAYER_WIDTH),QPen(COLORS[6],PLAYER_WIDTH),QPen(COLORS[7],PLAYER_WIDTH),QPen(COLORS[8],PLAYER_WIDTH)};
 
 
 TraceXClient::TraceXClient(int keyLeft,int keyRight):QObject()
@@ -18,11 +20,16 @@ TraceXClient::TraceXClient(int keyLeft,int keyRight):QObject()
     this->keyRight = keyRight;
     isKeysPressed[0] = false;
     isKeysPressed[1] = false;
+
     QTimer *timer = new QTimer(this);
     connect(timer,&QTimer::timeout,this,&TraceXClient::sendKeys);
     timer->start(TIME_TO_SEND_DIRECTION);
 }
 
+/**
+ * TraceXClient::sendKeys
+ * Sends to server if player go straight, turn left or turn right
+ */
 void TraceXClient::sendKeys()
 {
     if(tcpSocket->isOpen())
@@ -50,8 +57,14 @@ void TraceXClient::sendKeys()
     }
 }
 
-
-void TraceXClient::keyPressEvent(int key){
+/**
+ * TraceXClient::keyPressEvent
+ * Event called when user press key, save the key (left or right) that has been pressed
+ *
+ * @param int key : Key pressed
+ */
+void TraceXClient::keyPressEvent(int key)
+{
     if(key == keyRight)
     {
         isKeysPressed[0] = true;
@@ -65,7 +78,14 @@ void TraceXClient::keyPressEvent(int key){
     }
 }
 
-void TraceXClient::keyRealeaseEvent(int key){
+/**
+ * TraceXClient::keyPressEvent
+ * Event called when user press key, save the key (left or right) that has been realeased
+ *
+ * @param int key : Key released
+ */
+void TraceXClient::keyRealeaseEvent(int key)
+{
     if(key == keyRight)
     {
         isKeysPressed[0] = false;
@@ -75,10 +95,14 @@ void TraceXClient::keyRealeaseEvent(int key){
     else if(key == keyLeft)
     {
         isKeysPressed[1] = false;
-        //sendKeys();
     }
 }
 
+
+/**
+ * TraceXClient::checkConnectionAccpet
+ * Checks if connection have been accepted
+ */
 void TraceXClient::checkConnectionAccpet()
 {
     if(nameAccepted == 1 && colorAccpeted == 1)
@@ -88,10 +112,13 @@ void TraceXClient::checkConnectionAccpet()
     else if(nameAccepted == -1 || colorAccpeted == -1)
     {
         emit connectionSuccess(false);
-    }
-    //What if no answer?????
+    }    
 }
 
+/**
+ * TraceXClient::receive
+ * Decodes the information received
+ */
 void TraceXClient::receive()
 {
     in.startTransaction();
@@ -132,14 +159,12 @@ void TraceXClient::receive()
             else
             {
                 qDebug() << "color is already taken, setting a free color instead";
-                colorAccpeted = 1;
-                //colorAccpeted = -1;
-                //tcpSocket->close();
+                colorAccpeted = 1;     
             }
             checkConnectionAccpet();
         }
         else if(str == "newLines")
-        { // Does not work for shit
+        {
             //Send "newLines"
             //For each player
             //Send id
@@ -157,7 +182,7 @@ void TraceXClient::receive()
                 quint16 linesCount;
                 in >> colorID >> linesCount;
                 if(linesCount > 2)linesCount = 0;
-                //qDebug() <<"ID:\t" << colorID<<"Line count:\t" << linesCount;
+
                 for(int i = 0;i<linesCount;i++)
                 {
                     QLineF line;
@@ -203,6 +228,12 @@ void TraceXClient::receive()
     }
 }
 
+/**
+ * TraceXClient::readyUp
+ * Sends to server if player is ready
+ *
+ * @param bool ready : True if player is ready
+ */
 void TraceXClient::readyUp(bool ready)
 {
     QByteArray block;
@@ -212,8 +243,16 @@ void TraceXClient::readyUp(bool ready)
     tcpSocket->write(block);
 }
 
-//void TraceXClient::newLines(QList<QGraphicsItem*> &items);
 
+/**
+ * TraceXClient::connectToServer
+ * Requests to connect a new player to a server
+ *
+ * @param QString host : Server's IP adress
+ * @param int port : Server's port
+ * @param QString name : Player's name
+ * @param int colorID : Player's ID color
+ */
 void TraceXClient::connectToServer(QString host,int port,QString name,int colorID)
 {
     if(tcpSocket == nullptr)
@@ -246,12 +285,21 @@ void TraceXClient::connectToServer(QString host,int port,QString name,int colorI
     }
 }
 
+/**
+ * TraceXClient::tcpClose
+ * Informs connection with server has been closed
+ */
 void TraceXClient::tcpClose()
 {
     qDebug() << "Connection has been closed";
     qDebug() << "You have been kicked";
 }
 
+/**
+ * TraceXClient::displayError
+ * Informs the user of server connection errors
+ * @param socketError
+ */
 void TraceXClient::displayError(QAbstractSocket::SocketError socketError)
 {
     switch (socketError)

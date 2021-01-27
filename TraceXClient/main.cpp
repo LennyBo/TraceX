@@ -1,11 +1,9 @@
-
 #include "gamegraphicsview.h"
-#include "mainMenuView.h"
-#include "localView.h"
-#include "comboBoxColor.h"
+#include "mainmenuview.h"
+#include "localview.h"
+#include "comboboxcolor.h"
 #include "stackedlayout.h"
-#include "networkView.h"
-#include "keyIcon.h"
+#include "keyicon.h"
 
 #include <QApplication>
 #include <QStackedLayout>

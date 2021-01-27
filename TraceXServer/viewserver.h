@@ -2,7 +2,8 @@
 #define VIEWSERVER_H
 
 #include <QWidget>
-#include "player.h"
+
+class Player;
 class QVBoxLayout;
 class TCPServerWidget;
 
@@ -10,15 +11,14 @@ class ViewServer : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ViewServer(QWidget *parent = nullptr);
-    QVBoxLayout *playersLayout;
+    ViewServer(QWidget *parent = nullptr);
 
     void addPlayer(Player *p);
     void removePlayer();
 
+private:
+    QVBoxLayout *mainLayout, *playersLayout;
     TCPServerWidget* tcpServerWidget;
-
-signals:
 
 };
 

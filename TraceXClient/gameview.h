@@ -1,30 +1,35 @@
 #ifndef GAMEVIEW_H
 #define GAMEVIEW_H
 
-#include <QWidget>
 #include "constants.h"
+
+#include <QWidget>
 
 class GameGraphicsView;
 class TraceXClient;
 class QHBoxLayout;
 class QPushButton;
-
 class QVBoxLayout;
+class QLabel;
 
-class gameView : public QWidget
+class GameView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit gameView(QWidget *parent = nullptr);
-    QHBoxLayout* mainLayout ;
-    QVBoxLayout* playerLayout;
-    QPushButton *btnReady;
+    GameView(QWidget *parent = nullptr);
 
+private:
+    QHBoxLayout* mainLayout ;
+    QVBoxLayout* playerLayout, *scoreLayout;
+    QPushButton *btnReady;
     GameGraphicsView *game;
+    QLabel *lblTitle;
 
 public slots:
-    void updatePlayers(QList<player*> list);
     void startGame(QList<TraceXClient*> gameClient);
+
+    void updatePlayers(QList<player*> list);
+
 };
 
 #endif // GAMEVIEW_H

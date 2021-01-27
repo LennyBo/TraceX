@@ -1,11 +1,9 @@
-#include "keyIcon.h"
+#include "keyicon.h"
 #include "constants.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QMap>
-
-#include <QDebug>
 
 KeyIcon::KeyIcon(int keyIndex, QWidget *parent) : QWidget(parent)
 {

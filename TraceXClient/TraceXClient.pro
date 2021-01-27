@@ -9,32 +9,28 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    comboBoxColor.cpp \
+    comboboxcolor.cpp \
     gamegraphicsview.cpp \
     gameview.cpp \
-    helpView.cpp \
-    keyIcon.cpp \
-    localView.cpp \
+    helpview.cpp \
+    keyicon.cpp \
+    localview.cpp \
     main.cpp \
-    scorewidget.cpp \
+    mainmenuview.cpp \
     tracexclient.cpp \
-    mainMenuView.cpp \
-    networkView.cpp \
     stackedlayout.cpp \
     widgetplayer.cpp
 
 HEADERS += \
+    comboboxcolor.h \
     gamegraphicsview.h \
-    scorewidget.h \
+    helpview.h \
+    keyicon.h \
+    localview.h \
+    mainmenuview.h \
     tracexclient.h \
-    comboBoxColor.h \
     constants.h \
     gameview.h \
-    helpView.h \
-    keyIcon.h \
-    localView.h \
-    mainMenuView.h \
-    networkView.h \
     stackedlayout.h \
     widgetplayer.h
 

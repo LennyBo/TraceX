@@ -1,8 +1,6 @@
 #ifndef COMBOBOXCOLOR_H
 #define COMBOBOXCOLOR_H
 
-#include <QObject>
-#include <QWidget>
 #include <QComboBox>
 
 class ComboBoxColor : public QComboBox
@@ -10,6 +8,7 @@ class ComboBoxColor : public QComboBox
 public:
     ComboBoxColor(QWidget *parent = nullptr);
 
+private:
     QComboBox *cbColor;
     QPixmap *pixmap[8];
 };
